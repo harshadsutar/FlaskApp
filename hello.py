@@ -1,6 +1,6 @@
 import email
 from enum import unique
-from flask import Flask, render_template, flash
+from flask import Flask, render_template, flash, request
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired
@@ -10,10 +10,17 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] ='sqlite:///users.db'
+#app.config['SQLALCHEMY_DATABASE_URI'] ='sqlite:///users.db'
+app.config['SQLALCHEMY_DATABASE_URI'] ='mysql+pymysql://root:admin@localhost/our_users'
+
 app.config['SECRET_KEY'] = "password"
 
 db=SQLAlchemy(app)
+
+
+
+
+
 
 class Users(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -31,6 +38,30 @@ class UserForm(FlaskForm):
 
     submit = SubmitField('Submit')
 
+
+
+@app.route('/update/<int:id>' , methods=['GET','POST'])
+def update(id):
+    form = UserForm()
+    name_to_update = Users.query.get_or_404(id)
+    if request.method == "POST":
+        name_to_update.name = request.form['name']
+        name_to_update.email = request.form['email']
+        try:
+            db.session.commit()
+            flash("User Updated Successfully!")
+            return render_template("update.html" ,
+            form=form,
+            name_to_update = name_to_update)
+        except:
+            flash("Error! Looks like something went went wrong")
+            return render_template("update.html" ,
+            form=form,
+            name_to_update = name_to_update)
+    else:
+         return render_template("update.html" ,
+            form=form,
+            name_to_update = name_to_update)
 
 
 class NamerForm(FlaskForm):
