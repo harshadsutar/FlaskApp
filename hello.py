@@ -1,5 +1,6 @@
 import email
 from enum import unique
+from turtle import title
 from wsgiref.validate import validator
 from flask import Flask, render_template, flash, request
 from flask_wtf import FlaskForm
@@ -9,7 +10,7 @@ from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
-
+from wtforms.widgets import TextArea
 
 app = Flask(__name__)
 
@@ -24,7 +25,40 @@ migrate = Migrate(app , db)
 
 
 
+class Posts(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(255))
+    content = db.Column(db.Text)
+    author = db.Column(db.String(255))
+    date_posted = db.Column(db.DateTime, default=datetime.utcnow)
+    slug = db.Column(db.String(255))
 
+# create posts form
+
+class PostForm(FlaskForm):
+    title = StringField("Title", validators=[DataRequired()])
+    content = StringField("Content", validators=[DataRequired()], widget=TextArea())
+    author = StringField("Author", validators=[DataRequired()]) 
+    slug = StringField("Slug", validators=[DataRequired()])
+    submit = SubmitField("Submit", validators=[DataRequired()])
+
+@app.route('/add-post' , methods=['GET','POST'])
+def add_post():
+    form = PostForm()
+
+    if form.validate_on_submit():
+        post = Posts(title=form.title.data, content=form.content.data , author=form.author.data, slug=form.slug.data)
+        form.title.data=''
+        form.content.data=''
+        form.author.data=''
+        form.slug.data=''
+
+        db.session.add(post)
+        db.session.commit()
+
+        flash("Blog Post Submitted Successfully")
+
+    return render_template("add_post.html",form=form)
 
 class Users(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -116,6 +150,12 @@ class NamerForm(FlaskForm):
     submit = SubmitField('Submit')
 
 
+
+class PasswordForm(FlaskForm):
+    email = StringField("Whats your email", validators=[DataRequired()])
+    password_hash = PasswordField("Whats your password", validators=[DataRequired()])
+    submit = SubmitField("Submit")
+
 @app.route('/')
 def index():
     return render_template("index.html")
@@ -134,6 +174,43 @@ def page_not_found(e):
 @app.errorhandler(500)
 def page_not_found(e):
     return render_template("500.html"), 500
+
+
+
+
+
+@app.route('/test_pw', methods=['GET','POST'])
+def test_pw():
+    email = None
+    password = None
+    pw_to_check = None
+    passed = None
+    form = PasswordForm()
+
+
+    if form.validate_on_submit():
+        email = form.email.data
+        password = form.password_hash.data
+        form.email.data=''
+        form.password_hash.data=''
+
+        pw_to_check = Users.query.filter_by(email=email).first()
+
+
+        passed = check_password_hash(pw_to_check.password_hash, password)
+
+
+        flash('Form submitted successfully')
+    return render_template("test_pw.html", 
+    email=email,
+    password=password,
+    pw_to_check=pw_to_check, 
+    passed=passed,
+    form=form)
+
+
+
+
 
 @app.route('/name', methods=['GET','POST'])
 def name():
