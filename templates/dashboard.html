@@ -10,11 +10,21 @@
 {% endfor %}
 
 
-<h1>Dashboard</h1>
+<h2>Dashboard</h2>
 <br/>
 <br/>
 <br/>
 <a href="{{url_for('logout')}}">Logout</a>
+<br/><br/>
+
+
+<strong>Name:</strong>{{current_user.name}}<br/>
+<strong>Username:</strong>{{current_user.username}}<br/>
+<strong>User id:</strong>{{current_user.id}}<br/>
+<strong>Email:</strong>{{current_user.email}}<br/>
+<strong>Favorite Color:</strong>{{current_user.favorite_color}}<br/>
+<strong>Date joined:</strong>{{current_user.date_added}}<br/>
+ 
 
 
 {%endblock%}
