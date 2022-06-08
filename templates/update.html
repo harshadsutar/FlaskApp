@@ -9,23 +9,11 @@
   </div>
 {% endfor %}
 
-{%if name%}
-<h1>Update User </h1>
+{% if id == current_user.id %}
+
+<h1>Update user:</h1>
 <br/>
-<br/>
-<br/>
-<table class="table table-hover table-bordered table-striped">
-    {% for our_user in our_users %}
-    <tr>
-        <td>
-        {{our_user.id}}.{{our_user.name}} - {{our_user.email}}<br/>
-        </td>
-    </tr>
-    {% endfor %}
-</table>
-{%else%}
-<h1>User List:</h1>
-<br/>
+
 <div class="shadow p-3 mb-5 bg-body rounded">
 <form  action="/update/{{name_to_update.id}}"method="POST">
     {{form.hidden_tag()}}
@@ -46,12 +34,14 @@
     <a href="{{url_for('delete', id=id)}}" class="btn btn-danger">Delete </a>
 
 </form>
+
 </div>
+{% else %}
+<h2>Access Denied!</h2>
 
 <br/>       
 <br/>
 <br/>
 
-
-{%endif%}
+{% endif %}
 {%endblock%}

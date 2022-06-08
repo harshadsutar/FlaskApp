@@ -24,6 +24,8 @@
 <strong>Email:</strong>{{current_user.email}}<br/>
 <strong>Favorite Color:</strong>{{current_user.favorite_color}}<br/>
 <strong>Date joined:</strong>{{current_user.date_added}}<br/>
+
+<a href="{{url_for('update', id=current_user.id)}}">update</a>
  
 
 
