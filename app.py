@@ -13,7 +13,7 @@ app = Flask(__name__)
 #app.config['SQLALCHEMY_DATABASE_URI'] ='mysql+pymysql://root:admin@localhost/our_users'
 app.config['SQLALCHEMY_DATABASE_URI'] ='postgresql://yrltohibkyfifw:98005542a17f9cae8bf99b1990571ef2cf0885b9d65ba38e877e38540307ce0c@ec2-52-44-13-158.compute-1.amazonaws.com:5432/d3pve9p8j462mt'
 
-app.config['SECRET_KEY'] = ""
+app.config['SECRET_KEY'] = "password"
 
 db=SQLAlchemy(app)
 migrate = Migrate(app , db)
