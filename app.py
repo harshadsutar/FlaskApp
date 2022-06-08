@@ -5,15 +5,15 @@ from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin,login_user,LoginManager,login_required,logout_user,current_user
 from forms import PostForm, UserForm, NamerForm, PasswordForm , LoginForm
-
+import os
 
 app = Flask(__name__)
 
 #app.config['SQLALCHEMY_DATABASE_URI'] ='sqlite:///users.db'
 #app.config['SQLALCHEMY_DATABASE_URI'] ='mysql+pymysql://root:admin@localhost/our_users'
-app.config['SQLALCHEMY_DATABASE_URI'] ='postgresql://yrltohibkyfifw:98005542a17f9cae8bf99b1990571ef2cf0885b9d65ba38e877e38540307ce0c@ec2-52-44-13-158.compute-1.amazonaws.com:5432/d3pve9p8j462mt'
+app.config['SQLALCHEMY_DATABASE_URI'] ='postgres://yrltohibkyfifw:98005542a17f9cae8bf99b1990571ef2cf0885b9d65ba38e877e38540307ce0c@ec2-52-44-13-158.compute-1.amazonaws.com:5432/d3pve9p8j462mt'
 
-app.config['SECRET_KEY'] = "password"
+app.config['SECRET_KEY'] = ""
 
 db=SQLAlchemy(app)
 migrate = Migrate(app , db)
